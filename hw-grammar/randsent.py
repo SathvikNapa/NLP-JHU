@@ -15,6 +15,10 @@ import os
 import sys
 import random
 import argparse
+import re
+from collections import ChainMap
+
+terminal_pattern = r"(^[a-z\s]+)$"
 
 # Want to know what command-line arguments a program allows?
 # Commonly you can ask by passing it the --help option, like this:
@@ -29,6 +33,7 @@ import argparse
 # "parsing" a string means identifying the elements of the string and
 # the roles they play.
 
+
 def parse_args():
     """
     Parse command-line arguments.
@@ -37,12 +42,15 @@ def parse_args():
         args (an argparse.Namespace): Stores command-line attributes
     """
     # Initialize parser
-    parser = argparse.ArgumentParser(description="Generate random sentences from a PCFG")
+    parser = argparse.ArgumentParser(
+        description="Generate random sentences from a PCFG"
+    )
     # Grammar file (required argument)
     parser.add_argument(
         "-g",
         "--grammar",
-        type=str, required=True,
+        type=str,
+        required=True,
         help="Path to grammar file",
     )
     # Start symbol of the grammar
@@ -87,7 +95,7 @@ class Grammar:
 
         Args:
             grammar_file (str): Path to a .gr grammar file
-        
+
         Returns:
             self
         """
@@ -95,24 +103,72 @@ class Grammar:
         self.rules = None
         self._load_rules_from_file(grammar_file)
 
+    @staticmethod
+    def _spit_probable_choice(items, weights):
+        return random.choices(items, weights, k=1)[0]
+
+    @staticmethod
+    def _convert_tokens_to_sentence(tokens):
+        sentence = " ".join(tokens)
+        sentence = re.sub(r"\s+([.!?])", r"\1", sentence)
+        sentence = re.sub(r"\s+'", "'", sentence)
+        return sentence
+
     def _load_rules_from_file(self, grammar_file):
         """
         Read grammar file and store its rules in self.rules
 
         Args:
-            grammar_file (str): Path to the raw grammar file 
+            grammar_file (str): Path to the raw grammar file
         """
-        raise NotImplementedError
+
+        def _is_comment(line):
+            if re.search(r"^[#\s()]", line):
+                return 1
+
+        grammar_text = open(grammar_file, "rb").read().decode("utf-8")
+
+        def _is_terminal(text):
+            return bool(re.search(terminal_pattern, text))
+
+        valid_symbols = list(
+            filter(
+                lambda text: len(text) > 1 and not _is_comment(text),
+                grammar_text.split("\n"),
+            )
+        )
+        cleaned_valid_symbols = list(
+            map(lambda line: line.split("#")[0].strip().split("\t"), valid_symbols)
+        )
+
+        grammar_hash = {}
+        for symbol in cleaned_valid_symbols:
+            if _is_terminal(symbol[2]):
+                if symbol[1] not in grammar_hash:
+                    grammar_hash[symbol[1]] = {str(symbol[2]): float(symbol[0])}
+                    continue
+                grammar_hash[symbol[1]].update({str(symbol[2]): float(symbol[0])})
+                continue
+            else:
+                if symbol[1] not in grammar_hash:
+                    grammar_hash[symbol[1]] = {
+                        tuple(map(str, symbol[2].split())): float(symbol[0])
+                    }
+                    continue
+                grammar_hash[symbol[1]].update(
+                    {tuple(map(str, symbol[2].split())): float(symbol[0])}
+                )
+                continue
+        self.rules = grammar_hash
 
     def sample(self, derivation_tree, max_expansions, start_symbol):
         """
         Sample a random sentence from this grammar
 
         Args:
-            derivation_tree (bool): if true, the returned string will represent 
-                the tree (using bracket notation) that records how the sentence 
+            derivation_tree (bool): if true, the returned string will represent
+                the tree (using bracket notation) that records how the sentence
                 was derived
-                               
             max_expansions (int): max number of nonterminal expansions we allow
 
             start_symbol (str): start symbol to generate from
@@ -120,7 +176,34 @@ class Grammar:
         Returns:
             str: the random sentence or its derivation tree
         """
-        raise NotImplementedError
+
+        if start_symbol not in self.rules:
+            return start_symbol.strip()
+
+        def _tree_expand(symbol, n_expansions=0):
+            if (symbol not in self.rules) or (n_expansions >= max_expansions):
+                tokens = symbol.split()
+                tree = symbol
+                return tokens, tree
+
+            items = list(self.rules[symbol].keys())
+            weights = list(self.rules[symbol].values())
+            right_split = self._spit_probable_choice(items=items, weights=weights)
+
+            if isinstance(right_split, tuple):
+                tokens_list, subtrees = [], []
+                for child in right_split:
+                    tokens, tree = _tree_expand(child, n_expansions + 1)
+                    tokens_list.extend(tokens)
+                    subtrees.append(tree)
+                return tokens_list, f"({symbol} {' '.join(subtrees)})"
+            else:
+                return right_split.split(), f"({symbol} {right_split})"
+
+        tokens, tree_str = _tree_expand(start_symbol)
+        if derivation_tree:
+            return tree_str
+        return self._convert_tokens_to_sentence(tokens)
 
 
 ####################
@@ -139,13 +222,13 @@ def main():
         sentence = grammar.sample(
             derivation_tree=args.tree,
             max_expansions=args.max_expansions,
-            start_symbol=args.start_symbol
+            start_symbol=args.start_symbol,
         )
 
         # Print the sentence with the specified format.
         # If it's a tree, we'll pipe the output through the prettyprint script.
         if args.tree:
-            prettyprint_path = os.path.join(os.getcwd(), 'prettyprint')
+            prettyprint_path = os.path.join(os.getcwd(), "prettyprint")
             t = os.system(f"echo '{sentence}' | perl {prettyprint_path}")
         else:
             print(sentence)
