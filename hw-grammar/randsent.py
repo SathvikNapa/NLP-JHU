@@ -19,6 +19,7 @@ import re
 from collections import ChainMap
 
 terminal_pattern = r"(^[a-z\s]+)$"
+pre_terminal_pattern = r"^[A-Za-z]{2,}$"
 
 # Want to know what command-line arguments a program allows?
 # Commonly you can ask by passing it the --help option, like this:
@@ -104,15 +105,19 @@ class Grammar:
         self._load_rules_from_file(grammar_file)
 
     @staticmethod
-    def _spit_probable_choice(items, weights):
+    def _select_probable_choice(items, weights):
         return random.choices(items, weights, k=1)[0]
 
     @staticmethod
     def _convert_tokens_to_sentence(tokens):
         sentence = " ".join(tokens)
-        sentence = re.sub(r"\s+([.!?])", r"\1", sentence)
+        sentence = re.sub(r"(?<!\.)\s+([.!?])", r"\1", sentence)
         sentence = re.sub(r"\s+'", "'", sentence)
         return sentence
+
+    @staticmethod
+    def _is_terminal(text):
+        return bool(re.search(terminal_pattern, text))
 
     def _load_rules_from_file(self, grammar_file):
         """
@@ -127,10 +132,7 @@ class Grammar:
                 return 1
 
         grammar_text = open(grammar_file, "rb").read().decode("utf-8")
-
-        def _is_terminal(text):
-            return bool(re.search(terminal_pattern, text))
-
+        
         valid_symbols = list(
             filter(
                 lambda text: len(text) > 1 and not _is_comment(text),
@@ -143,7 +145,7 @@ class Grammar:
 
         grammar_hash = {}
         for symbol in cleaned_valid_symbols:
-            if _is_terminal(symbol[2]):
+            if self._is_terminal(symbol[2]):
                 if symbol[1] not in grammar_hash:
                     grammar_hash[symbol[1]] = {str(symbol[2]): float(symbol[0])}
                     continue
@@ -176,34 +178,47 @@ class Grammar:
         Returns:
             str: the random sentence or its derivation tree
         """
-
         if start_symbol not in self.rules:
             return start_symbol.strip()
 
-        def _tree_expand(symbol, n_expansions=0):
-            if (symbol not in self.rules) or (n_expansions >= max_expansions):
+        def _is_nonterminal(sym):
+            return sym.isupper()
+        
+        n_expansions = 0
+        def _tree_expand(symbol):
+            nonlocal n_expansions
+
+            if symbol not in self.rules:
                 tokens = symbol.split()
-                tree = symbol
-                return tokens, tree
+                return tokens, symbol
+
+            if _is_nonterminal(symbol):
+                n_expansions += 1
+                if n_expansions > max_expansions:
+                    return ["..."], f"({symbol} ...)"
 
             items = list(self.rules[symbol].keys())
             weights = list(self.rules[symbol].values())
-            right_split = self._spit_probable_choice(items=items, weights=weights)
+            right_split = self._select_probable_choice(items=items, weights=weights)
 
-            if isinstance(right_split, tuple):
-                tokens_list, subtrees = [], []
-                for child in right_split:
-                    tokens, tree = _tree_expand(child, n_expansions + 1)
+            if isinstance(right_split, (tuple, list)):
+                tokens_list, subtrees = [], []                
+                for daughter in right_split:
+                    if (daughter in self.rules) and \
+                        (_is_nonterminal(daughter)) and \
+                            (n_expansions >= max_expansions):
+                        tokens_list.append("...")
+                        subtrees.append("...")
+                        continue
+                    tokens, subtree = _tree_expand(daughter)
                     tokens_list.extend(tokens)
-                    subtrees.append(tree)
+                    subtrees.append(subtree)
                 return tokens_list, f"({symbol} {' '.join(subtrees)})"
             else:
                 return right_split.split(), f"({symbol} {right_split})"
-
+        
         tokens, tree_str = _tree_expand(start_symbol)
-        if derivation_tree:
-            return tree_str
-        return self._convert_tokens_to_sentence(tokens)
+        return tree_str if derivation_tree else self._convert_tokens_to_sentence(tokens)
 
 
 ####################
