@@ -111,8 +111,8 @@ class Grammar:
     @staticmethod
     def _convert_tokens_to_sentence(tokens):
         sentence = " ".join(tokens)
-        sentence = re.sub(r"(?<!\.)\s+([.!?])", r"\1", sentence)
-        sentence = re.sub(r"\s+'", "'", sentence)
+        # sentence = re.sub(r"(?<!\.)\s+([.!?])", r"\1", sentence)
+        sentence = re.sub(r"\s{2,}", "'", sentence)
         return sentence
 
     @staticmethod
@@ -182,8 +182,8 @@ class Grammar:
             return start_symbol.strip()
 
         def _is_nonterminal(sym):
-            return sym.isupper()
-        
+            return sym.isupper() or bool(re.search(pre_terminal_pattern, sym))
+
         n_expansions = 0
         def _tree_expand(symbol):
             nonlocal n_expansions
@@ -195,7 +195,7 @@ class Grammar:
             if _is_nonterminal(symbol):
                 n_expansions += 1
                 if n_expansions > max_expansions:
-                    return ["..."], f"({symbol} ...)"
+                    return [], f"({symbol} ...)"
 
             items = list(self.rules[symbol].keys())
             weights = list(self.rules[symbol].values())
@@ -207,7 +207,7 @@ class Grammar:
                     if (daughter in self.rules) and \
                         (_is_nonterminal(daughter)) and \
                             (n_expansions >= max_expansions):
-                        tokens_list.append("...")
+                        tokens_list.append("")
                         subtrees.append("...")
                         continue
                     tokens, subtree = _tree_expand(daughter)

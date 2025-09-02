@@ -57,14 +57,14 @@
 
 1	Noun	president
 1	Noun	sandwich
-1	Noun	pickle
+0.2	Noun	pickle
 1	Noun	chief of staff
 1	Noun	floor
 
 2	Adj	fine
 2	Adj	delicious
 1	Adj	perplexed
-0.5	Adj	pickled
+0.3	Adj	pickled
 
 1	Prep	with
 1	Prep	on
