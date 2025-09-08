@@ -181,26 +181,38 @@ class Grammar:
         if start_symbol not in self.rules:
             return start_symbol.strip()
 
-        def _tree_expand(symbol, n_expansions = 0):
+        def _is_nonterminal(sym):
+            return sym.isupper() or bool(re.search(pre_terminal_pattern, sym))
+
+        n_expansions = 0
+        def _tree_expand(symbol):
+            nonlocal n_expansions
 
             if symbol not in self.rules:
                 tokens = symbol.split()
                 return tokens, symbol
 
-            if n_expansions > max_expansions:
-                # return [], f"({symbol} ...)"
-                return [], f"( ... )"
+            if _is_nonterminal(symbol):
+                n_expansions += 1
+                if n_expansions > max_expansions:
+                    return [], f"({symbol} ...)"
 
             items = list(self.rules[symbol].keys())
             weights = list(self.rules[symbol].values())
             right_split = self._select_probable_choice(items=items, weights=weights)
 
-            if isinstance(right_split, tuple):
-                tokens_list, subtrees = [], []
-                for child in right_split:
-                    tokens, tree = _tree_expand(child, n_expansions+1)
+            if isinstance(right_split, (tuple, list)):
+                tokens_list, subtrees = [], []                
+                for daughter in right_split:
+                    if (daughter in self.rules) and \
+                        (_is_nonterminal(daughter)) and \
+                            (n_expansions >= max_expansions):
+                        tokens_list.append("")
+                        subtrees.append("...")
+                        continue
+                    tokens, subtree = _tree_expand(daughter)
                     tokens_list.extend(tokens)
-                    subtrees.append(tree)
+                    subtrees.append(subtree)
                 return tokens_list, f"({symbol} {' '.join(subtrees)})"
             else:
                 return right_split.split(), f"({symbol} {right_split})"
