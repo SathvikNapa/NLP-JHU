@@ -23,6 +23,8 @@
 1	ROOT	S !
 0.2	ROOT	is it true that S ?
 0.3	ROOT	WH AUX NP VPP ?
+0.3	ROOT	WH VP ?
+
 0.8	ROOT	I wonder WHS .
 
 
@@ -60,10 +62,13 @@
 0.3	VP	Vthat S
 0.3	VP	Vtrans NP that S
 0.5	VP	Vintrans PP
+1	VP	Verb NP Prep
 
 1	VPP	VerbP NP
+1	VPP	VerbP NP Prep
+1	VPP	VerbP NP VP
+1	VPP	VerbP that S
 0.6	VPP	VerbP
-0.3	VPP	Vintrans
 0.2	VPP	VPP Conj VPP
 
 1	NP	Det Noun
@@ -76,6 +81,7 @@
 0.6	Rel	that NP Verb
 0.1	Rel	that S
 0.5	Rel	who VP
+0.5	Rel	that VP
 
 1	PP	Prep NP
 
@@ -90,6 +96,7 @@
 0.8	VerbP	kiss
 2	VerbP	understand
 0.1	VerbP	pickle
+0.5	VerbP	think
 
 1	Vthat	thought that
 1	Vthat	believed that
@@ -103,6 +110,8 @@
 0.4	Vintrans	stood
 0.4	Vintrans	sat
 1	Vintrans	sighed
+1	Vintrans	ate
+1	Vintrans	thought
 
 1	Det	the
 1	Det	a
