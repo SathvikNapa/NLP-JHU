@@ -205,8 +205,8 @@
 1	Do	did
 1	Neg	not
 
-10	AUXNEG	Do Neg
-10	VP	AUXNEG VX
+1	AUXNEG	Do Neg
+3	VP	AUXNEG VX
 2	VX	Verb_base NP
 5	VX	Verb_base
 0.05	VX	Verb_base PP
