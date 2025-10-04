@@ -12,6 +12,7 @@ Provide 10 random sentences generated from your script
 10. a president pickled a sandwich in a sandwich in the chief of staff on a fine perplexed chief of staff in the floor in a president.
 
 1.4.2
+```
 (ROOT (S (NP (NP (Det every)
                  (Noun floor))
              (PP (Prep on)
@@ -22,7 +23,9 @@ Provide 10 random sentences generated from your script
              (NP (Det every)
                  (Noun floor))))
       .)
+```
 
+```
 (ROOT (S (NP (NP (Det every)
                  (Noun (Adj perplexed)
                        (Noun sandwich)))
@@ -39,21 +42,28 @@ Provide 10 random sentences generated from your script
              (NP (Det the)
                  (Noun president))))
       .)
+```
 
 1.4.3
+
+```
 (ROOT (S (NP (Det every)
              (Noun president))
          (VP (Verb ...)
              (NP ...)))
       .)
+```
 
+```
 (ROOT (S (NP (Det a)
              (Noun pickle))
          (VP (Verb pickled)
              (NP (Det the)
                  (Noun ...))))
       !)
+```
 
+```
 (ROOT is
       it
       true
@@ -63,10 +73,13 @@ Provide 10 random sentences generated from your script
          (VP (Verb ...)
              (NP ...)))
       ?)
+```
 
+```
 (ROOT (S (NP (NP (NP ...
                      ...)
                  ...)
              ...)
          ...)
       .)
+```

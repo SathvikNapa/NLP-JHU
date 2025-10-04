@@ -1,0 +1,1 @@
+./parse -g extra-grammars/grammar3.gr / Sally ate a sandwich .

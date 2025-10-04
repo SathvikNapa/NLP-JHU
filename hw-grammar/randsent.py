@@ -12,11 +12,9 @@ based on the submitted assignment with Keith Harrigian
 and Carlos Aguirre Fall 2019
 """
 import os
-import sys
 import random
 import argparse
 import re
-from collections import ChainMap
 
 terminal_pattern = r"(^[a-z\s]+)$"
 pre_terminal_pattern = r"^[A-Za-z]{2,}$"

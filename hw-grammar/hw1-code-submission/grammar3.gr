@@ -1,0 +1,113 @@
+# Symbols in the grammar are case-sensitive.
+# 
+# This grammar uses a convention that
+#    - terminals are usually lowercase  (president)
+#    - preterminals are capitalized     (Noun)
+#    - other nonterminals are all-caps  (NP)
+# 
+# This convention just makes grammars more readable to humans.  Thus:
+#
+#    - When *you* are writing grammars in questions 3 and 6, you should 
+#      follow this convention unless you have a good reason not to.  
+#
+#    - But your *program* should still work with grammars that don't
+#      follow this convention.  So how can your program reliably tell
+#      the difference between terminal and nonterminal symbols?  If
+#      there is at least one rule for rewriting a symbol, then that
+#      symbol is a nonterminal and should be rewritten.
+#######################
+
+# Rules for creating full sentences.
+
+3	ROOT	S .
+1	ROOT	S !
+0.5	ROOT	is it true that S ?
+
+# The basic grammar rules.  Here's what the abbreviations stand for:
+#    S        = sentence
+#    NP       = noun phrase
+#    VP       = verb phrase
+#    PP       = prepositional phrase
+#    Det      = determiner (article)
+#    Prep     = preposition
+#    Adj      = adjective
+#    Adv      = adverb
+#    Noun     = common noun
+#    PropNoun = proper noun (e.g., names, pronouns)
+#    Verb     = transitive verb (takes a noun phrase object, e.g., "ate a sandwich")
+#    Vintrans = intransitive verb (no object, may take PP, e.g., "sighed", "worked on a desk")
+#    Vthat    = verb that takes a sentential complement (e.g., "thought that S")
+#    Vtrans = verb that takes both NP and sentential complement (e.g., "it perplexed [the president] that S")
+#    Conj     = conjunction ("and", "or")
+
+1	S	NP VP
+
+1	VP	Verb NP
+1	VP	Verb PropNoun
+0.4	VP	Verb PropNoun VP
+0.3	VP	Vtrans NP
+1	VP	Vintrans
+0.5	VP	VP Conj VP
+0.5	VP	Verb Conj VP
+0.5	VP	Vthat S
+0.5	VP	Vtrans NP that S
+0.5	VP	Vintrans PP
+
+1	NP	Det Noun
+0.4	NP	NP PP
+1	NP	PropNoun
+0.4	NP	NP Conj NP
+0.01	NP	that S
+
+1	PP	Prep NP
+2	Noun	Adj Noun
+
+2	Verb	ate
+2	Verb	wanted
+1	Verb	kissed
+2	Verb	understood
+0.4	Verb	pickled
+
+1	Vthat	thought that
+1	Vthat	believed that
+1	Vthat	said that
+
+1	Vtrans	perplexed
+1	Vtrans	amazed
+1	Vtrans	surprised
+
+1	Vintrans	worked
+0.4	Vintrans	stood
+0.4	Vintrans	sat
+1	Vintrans	sighed
+
+1	Det	the
+1	Det	a
+0.7	Det	every
+
+1	Noun	president
+1	Noun	sandwich
+0.4	Noun	pickle
+1	Noun	chief of staff
+1	Noun	floor
+1	Noun	proposal
+1	Noun	desk
+
+1	PropNoun	Sally
+0.4	PropNoun	it
+
+2	Adj	Adv Adj
+2	Adj	fine
+2	Adj	delicious
+1	Adj	perplexed
+0.5	Adj	pickled
+
+1	Adv	very
+
+1	Prep	with
+1	Prep	on
+0.8	Prep	under
+1	Prep	in
+
+1	Conj	and
+1	Conj	or

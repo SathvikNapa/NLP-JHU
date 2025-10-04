@@ -57,7 +57,8 @@
 0.4	NP	NP PP
 1	NP	PropNoun
 0.4	NP	NP Conj NP
-0.01	NP	that S
+# 0.01	NP	that S
+
 
 1	PP	Prep NP
 2	Noun	Adj Noun
