@@ -1,0 +1,18 @@
+Cross-entropy: 12.2729 nats (= perplexity 213812.950)
+Cross-entropy: 11.0744 nats (= perplexity 64498.474)
+Cross-entropy: 12.8441 nats (= perplexity 378531.439)
+Total training time: 0:00:32
+---
+Wrote tagging to ../data/pretrain_endev.output
+Cross-entropy: 12.8441 nats (= perplexity 378531.439)
+Tagging accuracy: all: 91.983%, known: 94.964%, seen: nan%, novel: 61.101%
+===
+Cross-entropy: 12.2729 nats (= perplexity 213812.950)
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Total training time: 0:00:32
+---
+Wrote tagging to ../data/pretrain_endev.output
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+===

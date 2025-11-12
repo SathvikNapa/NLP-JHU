@@ -1,0 +1,8 @@
+Cross-entropy: 11.4016 nats (= perplexity 89463.245)
+Cross-entropy: 13.2078 nats (= perplexity 544605.062)
+Total training time: 0:00:05
+---
+Wrote tagging to ../models/ensup25k_endev.output
+Cross-entropy: 13.2078 nats (= perplexity 544605.062)
+Tagging accuracy: all: 84.158%, known: 96.327%, seen: nan%, novel: 23.869%
+===

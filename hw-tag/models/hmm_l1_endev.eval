@@ -1,0 +1,9 @@
+Cross-entropy: 12.2729 nats (= perplexity 213812.950)
+Cross-entropy: 7.3767 nats (= perplexity 1598.301)
+Cross-entropy: 7.3767 nats (= perplexity 1598.299)
+Total training time: 0:00:34
+---
+Wrote tagging to ../models/hmm_l1_endev.output
+Cross-entropy: 7.3767 nats (= perplexity 1598.299)
+Tagging accuracy: all: 88.421%, known: 92.871%, seen: nan%, novel: 42.315%
+===

@@ -1,0 +1,271 @@
+                  3: 3 
+                  Attributes: sem=3 head=3
+               Num: 3 
+               Attributes: head=3 sem=3 type=int
+            FACTOR: 3 
+            Attributes: type=int head=3 sem=3
+         TERM: 3 
+         Attributes: type=int head=3 sem=3
+         *: * 
+         Attributes: head=* sem=*
+               5: 5 
+               Attributes: head=5 sem=5
+            Num: 5 
+            Attributes: type=int head=5 sem=5
+         FACTOR: 5 
+         Attributes: head=5 sem=5 type=int
+      TERM: 3 * 5 
+      Attributes: type=int sem=itimes(3,5)
+   EXPR: 3 * 5 
+   Attributes: type=int sem=itimes(3,5)
+ROOT: 3 * 5 
+Attributes: sem=itimes(3,5) type=int
+---
+                  pi: pi 
+                  Attributes: head=pi sem=pi
+               Num: pi 
+               Attributes: head=pi sem=pi type=real
+            FACTOR: pi 
+            Attributes: type=real head=pi sem=pi
+         TERM: pi 
+         Attributes: type=real sem=pi head=pi
+         *: * 
+         Attributes: sem=* head=*
+            sqrt: sqrt 
+            Attributes: sem=sqrt head=sqrt
+            {: { 
+            Attributes:
+                        7: 7 
+                        Attributes: head=7 sem=7
+                     Num: 7 
+                     Attributes: type=int head=7 sem=7
+                  FACTOR: 7 
+                  Attributes: type=int head=7 sem=7
+               TERM: 7 
+               Attributes: type=int head=7 sem=7
+            EXPR: 7 
+            Attributes: type=int sem=7
+            }: } 
+            Attributes:
+         FACTOR: sqrt { 7 } 
+         Attributes: sem=sqrt(7) type=real
+      TERM: pi * sqrt { 7 } 
+      Attributes: type=real sem=rtimes(pi,sqrt(7))
+   EXPR: pi * sqrt { 7 } 
+   Attributes: sem=rtimes(pi,sqrt(7)) type=real
+ROOT: pi * sqrt { 7 } 
+Attributes: type=real sem=rtimes(pi,sqrt(7))
+---
+                  7: 7 
+                  Attributes: head=7 sem=7
+               Num: 7 
+               Attributes: type=int head=7 sem=7
+            FACTOR: 7 
+            Attributes: type=int sem=7 head=7
+         TERM: 7 
+         Attributes: sem=7 head=7 type=int
+         *: * 
+         Attributes: sem=* head=*
+            sqrt: sqrt 
+            Attributes: sem=sqrt head=sqrt
+            {: { 
+            Attributes:
+                        pi: pi 
+                        Attributes: sem=pi head=pi
+                     Num: pi 
+                     Attributes: type=real sem=pi head=pi
+                  FACTOR: pi 
+                  Attributes: sem=pi head=pi type=real
+               TERM: pi 
+               Attributes: type=real sem=pi head=pi
+            EXPR: pi 
+            Attributes: sem=pi type=real
+            }: } 
+            Attributes:
+         FACTOR: sqrt { pi } 
+         Attributes: sem=sqrt(pi) type=real
+      TERM: 7 * sqrt { pi } 
+      No consistent way to assign attributes!  (Maybe another parse?)
+   EXPR: 7 * sqrt { pi } 
+   No consistent way to assign attributes!  (Maybe another parse?)
+ROOT: 7 * sqrt { pi } 
+No consistent way to assign attributes!  (Maybe another parse?)
+---
+                  7: 7 
+                  Attributes: head=7 sem=7
+               Num: 7 
+               Attributes: type=int sem=7 head=7
+            FACTOR: 7 
+            Attributes: type=int head=7 sem=7
+         TERM: 7 
+         Attributes: head=7 sem=7 type=int
+         *: * 
+         Attributes: head=* sem=*
+               0: 0 
+               Attributes: sem=0 head=0
+            Num: 0 
+            Attributes: head=0 sem=0
+         FACTOR: 0 
+         Attributes: head=0 sem=0
+      TERM: 7 * 0 
+      Attributes: sem=itimes(7,0) type=int
+   EXPR: 7 * 0 
+   Attributes: sem=itimes(7,0) type=int
+ROOT: 7 * 0 
+Attributes: type=int sem=itimes(7,0)
+---
+                  pi: pi 
+                  Attributes: sem=pi head=pi
+               Num: pi 
+               Attributes: sem=pi head=pi type=real
+            FACTOR: pi 
+            Attributes: type=real sem=pi head=pi
+         TERM: pi 
+         Attributes: type=real sem=pi head=pi
+         *: * 
+         Attributes: head=* sem=*
+               0: 0 
+               Attributes: sem=0 head=0
+            Num: 0 
+            Attributes: sem=0 head=0
+         FACTOR: 0 
+         Attributes: head=0 sem=0
+      TERM: pi * 0 
+      Attributes: type=real sem=rtimes(pi,0)
+   EXPR: pi * 0 
+   Attributes: sem=rtimes(pi,0) type=real
+ROOT: pi * 0 
+Attributes: type=real sem=rtimes(pi,0)
+---
+                  0: 0 
+                  Attributes: head=0 sem=0
+               Num: 0 
+               Attributes: sem=0 head=0
+            FACTOR: 0 
+            Attributes: head=0 sem=0
+         TERM: 0 
+         Attributes: sem=0 head=0
+         *: * 
+         Attributes: head=* sem=*
+               0: 0 
+               Attributes: head=0 sem=0
+            Num: 0 
+            Attributes: sem=0 head=0
+         FACTOR: 0 
+         Attributes: sem=0 head=0
+      TERM: 0 * 0 
+      Attributes: sem=itimes(0,0) type=int
+      Or:       type=real sem=rtimes(0,0)
+   EXPR: 0 * 0 
+   Attributes: sem=itimes(0,0) type=int
+   Or:       type=real sem=rtimes(0,0)
+ROOT: 0 * 0 
+Attributes: sem=itimes(0,0) type=int
+Or:       sem=rtimes(0,0) type=real
+---
+               {: { 
+               Attributes:
+                              0: 0 
+                              Attributes: head=0 sem=0
+                           Num: 0 
+                           Attributes: head=0 sem=0
+                        FACTOR: 0 
+                        Attributes: head=0 sem=0
+                     TERM: 0 
+                     Attributes: sem=0 head=0
+                     *: * 
+                     Attributes: head=* sem=*
+                           0: 0 
+                           Attributes: sem=0 head=0
+                        Num: 0 
+                        Attributes: sem=0 head=0
+                     FACTOR: 0 
+                     Attributes: head=0 sem=0
+                  TERM: 0 * 0 
+                  Attributes: sem=itimes(0,0) type=int
+                  Or:       type=real sem=rtimes(0,0)
+               EXPR: 0 * 0 
+               Attributes: sem=itimes(0,0) type=int
+               Or:       sem=rtimes(0,0) type=real
+               }: } 
+               Attributes:
+            FACTOR: { 0 * 0 } 
+            Attributes: sem=itimes(0,0) type=int
+            Or:       type=real sem=rtimes(0,0)
+         TERM: { 0 * 0 } 
+         Attributes: sem=itimes(0,0) type=int
+         Or:       type=real sem=rtimes(0,0)
+         *: * 
+         Attributes: head=* sem=*
+               3: 3 
+               Attributes: sem=3 head=3
+            Num: 3 
+            Attributes: type=int head=3 sem=3
+         FACTOR: 3 
+         Attributes: sem=3 head=3 type=int
+      TERM: { 0 * 0 } * 3 
+      Attributes: sem=itimes(itimes(0,0),3) type=int
+   EXPR: { 0 * 0 } * 3 
+   Attributes: type=int sem=itimes(itimes(0,0),3)
+ROOT: { 0 * 0 } * 3 
+Attributes: type=int sem=itimes(itimes(0,0),3)
+---
+               {: { 
+               Attributes:
+                              0: 0 
+                              Attributes: sem=0 head=0
+                           Num: 0 
+                           Attributes: sem=0 head=0
+                        FACTOR: 0 
+                        Attributes: head=0 sem=0
+                     TERM: 0 
+                     Attributes: sem=0 head=0
+                     *: * 
+                     Attributes: sem=* head=*
+                           0: 0 
+                           Attributes: sem=0 head=0
+                        Num: 0 
+                        Attributes: head=0 sem=0
+                     FACTOR: 0 
+                     Attributes: sem=0 head=0
+                  TERM: 0 * 0 
+                  Attributes: type=int sem=itimes(0,0)
+                  Or:       type=real sem=rtimes(0,0)
+               EXPR: 0 * 0 
+               Attributes: type=int sem=itimes(0,0)
+               Or:       type=real sem=rtimes(0,0)
+               }: } 
+               Attributes:
+            FACTOR: { 0 * 0 } 
+            Attributes: type=int sem=itimes(0,0)
+            Or:       sem=rtimes(0,0) type=real
+         TERM: { 0 * 0 } 
+         Attributes: sem=itimes(0,0) type=int
+         Or:       sem=rtimes(0,0) type=real
+         *: * 
+         Attributes: head=* sem=*
+            sqrt: sqrt 
+            Attributes: head=sqrt sem=sqrt
+            {: { 
+            Attributes:
+                        3: 3 
+                        Attributes: sem=3 head=3
+                     Num: 3 
+                     Attributes: head=3 sem=3 type=int
+                  FACTOR: 3 
+                  Attributes: head=3 sem=3 type=int
+               TERM: 3 
+               Attributes: sem=3 head=3 type=int
+            EXPR: 3 
+            Attributes: type=int sem=3
+            }: } 
+            Attributes:
+         FACTOR: sqrt { 3 } 
+         Attributes: type=real sem=sqrt(3)
+      TERM: { 0 * 0 } * sqrt { 3 } 
+      Attributes: type=real sem=rtimes(rtimes(0,0),sqrt(3))
+   EXPR: { 0 * 0 } * sqrt { 3 } 
+   Attributes: sem=rtimes(rtimes(0,0),sqrt(3)) type=real
+ROOT: { 0 * 0 } * sqrt { 3 } 
+Attributes: sem=rtimes(rtimes(0,0),sqrt(3)) type=real
+---

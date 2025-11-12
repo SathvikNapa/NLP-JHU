@@ -1,0 +1,30 @@
+Cross-entropy: 12.2729 nats (= perplexity 213812.950)
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Total training time: 0:00:34
+---
+Wrote tagging to ../models/ensup_endev.output
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+===
+Wrote tagging to ../models/ensup_endev.output
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+Cross-entropy: 9.9119 nats (= perplexity 20169.832)
+===
+Wrote tagging to ../models/ensup_endev.output
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+Cross-entropy: 9.9119 nats (= perplexity 20169.832)
+===
+Wrote tagging to ../models/ensup_endev.output
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+Cross-entropy: 9.9119 nats (= perplexity 20169.832)
+===
+Cross-entropy: 12.2729 nats (= perplexity 213812.950)
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Total training time: 0:00:33
+---
+Wrote tagging to ../models/ensup_endev.output
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+===

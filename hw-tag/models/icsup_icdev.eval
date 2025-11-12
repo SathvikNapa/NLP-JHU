@@ -1,0 +1,18 @@
+Cross-entropy: 2.4470 nats (= perplexity 11.554)
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Total training time: 0:00:00
+---
+Wrote tagging to ../models/icsup_icdev.output
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Tagging accuracy: all: 96.970%, known: 96.970%, seen: nan%, novel: nan%
+===
+Cross-entropy: 2.4470 nats (= perplexity 11.554)
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Total training time: 0:00:00
+---
+Wrote tagging to ../models/icsup_icdev.output
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Tagging accuracy: all: 96.970%, known: 96.970%, seen: nan%, novel: nan%
+===

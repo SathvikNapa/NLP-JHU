@@ -1,0 +1,12 @@
+Cross-entropy: 3.0510 nats (= perplexity 21.137)
+Cross-entropy: 9.4801 nats (= perplexity 13096.005)
+Cross-entropy: 7.4229 nats (= perplexity 1673.831)
+Cross-entropy: 6.7716 nats (= perplexity 872.702)
+Cross-entropy: 7.6683 nats (= perplexity 2139.514)
+Total training time: 0:01:14
+---
+Wrote tagging to ../models/crf/crf_batch_256_endev.output
+Cross-entropy: 7.6683 nats (= perplexity 2139.514)
+Tagging accuracy: all: 63.318%, known: 66.471%, seen: nan%, novel: 30.645%
+===
+Cross-entropy: 3.0510 nats (= perplexity 21.137)

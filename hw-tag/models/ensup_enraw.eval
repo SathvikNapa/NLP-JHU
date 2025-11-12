@@ -1,0 +1,4 @@
+Wrote tagging to ../models/ensup_enraw.output
+Tagging accuracy: all: nan%, known: nan%, seen: nan%, novel: nan%
+Cross-entropy: 9.7547 nats (= perplexity 17235.596)
+===

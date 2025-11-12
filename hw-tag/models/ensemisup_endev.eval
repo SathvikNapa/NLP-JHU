@@ -1,0 +1,15 @@
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Cross-entropy: 6.2431 nats (= perplexity 514.441)
+Cross-entropy: 6.2331 nats (= perplexity 509.338)
+Cross-entropy: 6.2264 nats (= perplexity 505.927)
+Cross-entropy: 6.2209 nats (= perplexity 503.152)
+Total training time: 0:02:51
+---
+Wrote tagging to ../models/ensemisup_endev.output
+Cross-entropy: 6.2209 nats (= perplexity 503.152)
+Tagging accuracy: all: 93.595%, known: 96.566%, seen: nan%, novel: 62.808%
+===
+Wrote tagging to ../models/ensemisup_endev.output
+Tagging accuracy: all: 93.595%, known: 96.566%, seen: nan%, novel: 62.808%
+Cross-entropy: 6.2209 nats (= perplexity 503.152)
+===

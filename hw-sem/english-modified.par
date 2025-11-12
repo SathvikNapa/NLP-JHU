@@ -1,0 +1,14 @@
+(ROOT (S (NP (Det all) (N caviar)) (VP (V is) (Adj delicious))) .)
+23.022957517308775
+(ROOT (S (NP (Det the) (N caviar)) (VP (V is) (Adj fine))) .)
+22.022957517308775
+(ROOT (S (NP (Det every) (N caviar)) (VP (V is) (Adj delicious))) .)
+24.022957517308775
+(ROOT (S (NP (Det the) (N caviar)) (VP (V are) (Adj perplexed))) .)
+23.02577253291583
+(ROOT (S (NP (Det two) (N caviar)) (VP (V are) (Adj fine))) .)
+25.025772532915827
+(ROOT (S (NP (Det two) (N sand)) (VP (V is) (Adj delicious))) .)
+24.022957517308775
+(ROOT (S (NP (Det two) (N rice)) (VP (V is) (Adj delicious))) .)
+24.022957517308775

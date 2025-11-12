@@ -9,7 +9,8 @@ import math
 from pathlib import Path
 import torch
 
-from probs import Wordtype, LanguageModel, num_tokens, read_trigrams
+from probs import Wordtype, LanguageModel, num_tokens, read_trigrams # Uncomment and change
+# from probs_v2 import Wordtype, LanguageModel, num_tokens, read_trigrams
 
 log = logging.getLogger(Path(__file__).stem)  # For usage, see findsim.py in earlier assignment.
 

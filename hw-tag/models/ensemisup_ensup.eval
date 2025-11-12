@@ -1,0 +1,8 @@
+Wrote tagging to ../models/ensemisup_ensup.output
+Tagging accuracy: all: 97.677%, known: 97.677%, seen: nan%, novel: nan%
+Cross-entropy: 6.5142 nats (= perplexity 674.663)
+===
+Wrote tagging to ../models/ensemisup_ensup.output
+Tagging accuracy: all: 97.677%, known: 97.677%, seen: nan%, novel: nan%
+Cross-entropy: 6.5142 nats (= perplexity 674.663)
+===

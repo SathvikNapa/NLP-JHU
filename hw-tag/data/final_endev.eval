@@ -1,0 +1,29 @@
+Cross-entropy: 12.8441 nats (= perplexity 378531.439)
+Cross-entropy: 11.9486 nats (= perplexity 154602.573)
+Cross-entropy: 13.1758 nats (= perplexity 527442.478)
+Total training time: 0:01:06
+---
+Wrote tagging to ../data/final_endev.output
+Cross-entropy: 13.1758 nats (= perplexity 527442.478)
+Tagging accuracy: all: 77.431%, known: 79.854%, seen: nan%, novel: 52.324%
+===
+Cross-entropy: 11.9486 nats (= perplexity 154602.573)
+Cross-entropy: 13.1758 nats (= perplexity 527442.478)
+Total training time: 0:01:06
+---
+Wrote tagging to ../data/final_endev.output
+Cross-entropy: 13.1758 nats (= perplexity 527442.478)
+Tagging accuracy: all: 77.431%, known: 79.854%, seen: nan%, novel: 52.324%
+===
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Cross-entropy: 12.3305 nats (= perplexity 226496.723)
+Total training time: 0:01:06
+---
+Wrote tagging to ../data/final_endev.output
+Cross-entropy: 12.3305 nats (= perplexity 226496.723)
+Tagging accuracy: all: 79.987%, known: 84.309%, seen: nan%, novel: 35.199%
+===
+Wrote tagging to ../data/final_endev.output
+Tagging accuracy: all: 79.987%, known: 84.309%, seen: nan%, novel: 35.199%
+Cross-entropy: 12.3305 nats (= perplexity 226496.723)
+===
