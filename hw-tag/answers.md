@@ -155,9 +155,9 @@ supervised model might have already learned the transitions well from the labels
 
 #### Most fixed token
 
-* Nearly all or most correct corrected tokens were _OOV_ tokens. (Meaning, the unlabeled dataset on which the
+* Nearly all or most corrected tokens were _OOV_ tokens. (Meaning, the unlabeled dataset on which the
   semisupervised model might have had new context than what the ensup data had)
-* This conversion of had the biggest contribution to the emission probability change.
+* This conversion of OOV had the biggest contribution to the emission probability change.
 
 (f) Suggest at least two reasons to explain why the semi-supervised approach didn’t always help.
 
