@@ -12,8 +12,7 @@ Answer:
 As mentioned in the section "Don’t guess when you already know", we do this specifically to not meddle with the
 conditional probabilities of actual transitions and emissions. We ensure
 that we do not add the EOS and BOS to emission matrix B. We add the BOS and EOS to A since we need have all valid
-transitions. The values for the BOS will be -inf in log-space and 0 in non-log probability space. EOS is unused and
-hence we make it np.nan
+transitions. The values for the BOS will be -inf in log-space and 0 in non-log probability space. EOS is unused in transition matrix A and hence we make it np.nan
 
 (b) If you train on a sup file and then evaluate on a held-out raw file, you’ll get lower perplexity
 than if you evaluate on a held-out dev file. Why is that? Which perplexity do you think is
