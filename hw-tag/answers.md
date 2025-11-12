@@ -41,47 +41,47 @@ EnSup
 
 ```commandline
 Eval on Labeled Dev:
-INFO:eval:Cross-entropy: 9.9119 nats (= perplexity 20169.835)
-INFO:eval:Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
 
 Eval on ensup4k:
-INFO:eval:Cross-entropy: 6.2818 nats (= perplexity 534.756)
-INFO:eval:Tagging accuracy: all: 97.771%, known: 97.771%, seen: nan%, novel: nan%
+Cross-entropy: 6.2818 nats (= perplexity 534.756)
+Tagging accuracy: all: 97.771%, known: 97.771%, seen: nan%, novel: nan%
 
 Eval on Unlabeled Raw:
 63.31s user 10.99s system 166% cpu 44.548 total
-INFO:eval:Cross-entropy: 9.7547 nats (= perplexity 17235.596)
+Cross-entropy: 9.7547 nats (= perplexity 17235.596)
 ```
 
 Model trained on EnSup25k (More or less the same performance on the dev data. Better perplexity on raw data)
 
 ```commandline
 Eval on Dev
-INFO:eval:Cross-entropy: 13.2078 nats (= perplexity 544605.062)
-INFO:eval:Tagging accuracy: all: 84.158%, known: 96.327%, seen: nan%, novel: 23.869%
+Cross-entropy: 13.2078 nats (= perplexity 544605.062)
+Tagging accuracy: all: 84.158%, known: 96.327%, seen: nan%, novel: 23.869%
 
 Eval on Raw
-INFO:eval:Cross-entropy: 12.6742 nats (= perplexity 319411.085)
+Cross-entropy: 12.6742 nats (= perplexity 319411.085)
 ```
 
 ICSup model
 
 ```commandline
 icsup trained model on icdev data
-> INFO:eval:Cross-entropy: 1.2864 nats (= perplexity 3.620)
+Cross-entropy: 1.2864 nats (= perplexity 3.620)
 
 icsup trained model on icraw data
-> INFO:eval:Cross-entropy: 1.2217 nats (= perplexity 3.393)
+eval:Cross-entropy: 1.2217 nats (= perplexity 3.393)
 ```
 
 CZSup model
 
 ```commandline
 czsup trained model | eval on czdev data
-> INFO:eval:Cross-entropy: 15.2758 nats (= perplexity 4307265.420)
+eval:Cross-entropy: 15.2758 nats (= perplexity 4307265.420)
 
 czsup trained model | eval on czdev data
-> INFO:eval:Cross-entropy: 13.6666 nats (= perplexity 861638.465)
+eval:Cross-entropy: 13.6666 nats (= perplexity 861638.465)
 ```
 
 (c) V includes the word types from sup and raw (plus oov). Why not from dev as well?
@@ -101,16 +101,16 @@ Tagging on known has made a significant drop from 96.78% to 84.309%.
 
 python3 tag.py ../data/endev --model ../models/enunsup.pkl --checkpoint        54.24s user 6.48s system 154% cpu 39.184 total
 
-INFO:eval:Cross-entropy: 12.3305 nats (= perplexity 226496.468)
-INFO:eval:Tagging accuracy: all: 79.987%, known: 84.309%, seen: nan%, novel: 35.199%
+Cross-entropy: 12.3305 nats (= perplexity 226496.468)
+Tagging accuracy: all: 79.987%, known: 84.309%, seen: nan%, novel: 35.199%
 ```
 
 ```commandline
 Supervised Model:
-INFO:eval:Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
 
 Semisupervised Model:
-INFO:eval:Tagging accuracy: all: 93.595%, known: 96.566%, seen: nan%, novel: 62.808%
+Tagging accuracy: all: 93.595%, known: 96.566%, seen: nan%, novel: 62.808%
 ```
 
 * The model trained on semi-supervised training helped improve the overall tagging accuracy from 90.45% to 93.59%.
@@ -147,7 +147,8 @@ Answer:
 * The shift in probabilities is observed by max element-wise change of probabilities (not in log space)
 
 > max(Change in A) = 0.175 (17.5 percentage points)
-> max(Change in B) = 0.658  (65.8 percentage points).
+
+> max(Change in B) = 0.658  (65.8 percentage points)
 
 This shift in probabilities shows us that the semisupervised model changed the emission probabilities more than the
 transition properties, as mentioned in the handout. The lesser change in transition probability might be because the
@@ -182,16 +183,16 @@ enraw?
 
 ```commandline
 Supervised Unigram Model trained on ensup evaluated on endev
-INFO:eval:Tagging accuracy: all: 87.674%, known: 95.980%, seen: nan%, novel: 1.613%
-INFO:eval:Cross-entropy: 13.8220 nats (= perplexity 1006515.912)
+Tagging accuracy: all: 87.674%, known: 95.980%, seen: nan%, novel: 1.613%
+Cross-entropy: 13.8220 nats (= perplexity 1006515.912)
 
 Semisupervised Unigram Model trained on ensup and enraw. Evaluated on endev 
-INFO:eval:Tagging accuracy: all: 87.540%, known: 95.980%, seen: nan%, novel: 0.095%
-INFO:eval:Cross-entropy: 13.8220 nats (= perplexity 1006516.458)
+Tagging accuracy: all: 87.540%, known: 95.980%, seen: nan%, novel: 0.095%
+Cross-entropy: 13.8220 nats (= perplexity 1006516.458)
 
 Bigram Model trained on ensup evaluated on endev
-INFO:eval:Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
-INFO:eval:Cross-entropy: 9.9119 nats (= perplexity 20169.835)
+Tagging accuracy: all: 90.455%, known: 96.786%, seen: nan%, novel: 24.858%
+Cross-entropy: 9.9119 nats (= perplexity 20169.835)
 ```
 
 The bigram model shows a sharp improvement to our baseline unigram model in terms of tagging accuracy and language
