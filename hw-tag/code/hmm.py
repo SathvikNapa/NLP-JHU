@@ -11,7 +11,7 @@ import pickle
 import time
 from math import inf
 from pathlib import Path
-from typing import Callable, Optional, List
+from typing import Callable, Optional, List, Union
 
 import torch
 from jaxtyping import Float
@@ -98,6 +98,13 @@ class HiddenMarkovModel:
         self.eye: Tensor = torch.eye(
             self.k
         )  # identity matrix, used as a collection of one-hot tag vectors
+        self.mu_A = 0.0
+        self.mu_B = 0.0
+        self.A_prior = None
+        self.B_prior = None
+        self.w_sup = 10.0
+        self.w_raw = 1.0
+        self.allowed_tags_for_word = None
 
         self.init_params()  # create and initialize model parameters
 
@@ -167,6 +174,72 @@ class HiddenMarkovModel:
             print("\t".join(row))
         print("\n")
 
+    def _lB_for_word(
+        self, lB: torch.Tensor, wj: int, required_tag: int | None
+    ) -> torch.Tensor:
+        """Return log-emission vector for word wj with BOS/EOS zeros and hard constraints applied."""
+        NEGINF = -float("inf")
+        if required_tag is None:
+            l = lB[:, wj].clone()
+            l[self.bos_t] = NEGINF
+            l[self.eos_t] = NEGINF
+            if self.allowed_tags_for_word and (wj in self.allowed_tags_for_word):
+                allowed = self.allowed_tags_for_word[wj]
+                mask = torch.ones(self.k, dtype=torch.bool, device=l.device)
+                for t in allowed:
+                    mask[t] = False
+                l[mask] = NEGINF
+        else:
+            l = torch.full((self.k,), NEGINF, device=lB.device)
+            l[required_tag] = lB[required_tag, wj]
+        return l
+
+    def train_semisup(
+        self,
+        sup_corpus,
+        raw_corpus,
+        loss,
+        λ: float = 0.1,
+        w_sup: float = 10.0,
+        w_raw: float = 1.0,
+        patience: int = 3,
+        max_steps: int = 50000,
+        save_path: Union[Path, str, None] = "my_hmm.pkl",
+    ):
+        self.w_sup, self.w_raw = w_sup, w_raw
+        self.w_sup, self.w_raw = w_sup, w_raw
+        self._save_time = time.time()
+        best = float("inf")
+        bad = 0
+        steps = 0
+
+        while steps < max_steps:
+            self._zero_counts()
+            for s in sup_corpus:
+                self.E_step_supervised(
+                    self._integerize_sentence(s, sup_corpus), mult=w_sup
+                )
+                steps += 1
+            # raw forward-backward
+            for s in raw_corpus:
+                self.E_step(self._integerize_sentence(s, raw_corpus), mult=w_raw)
+                steps += 1
+
+            self.M_step(λ)
+            if save_path:
+                self.save(save_path, checkpoint=steps)
+
+            cur = float(loss(self))
+            if cur + 1e-9 < best:
+                best, bad = cur, 0
+            else:
+                bad += 1
+                if bad >= patience:
+                    break
+
+        if save_path:
+            self.save(save_path)
+
     def M_step(self, λ: float) -> None:
         """Set the transition and emission matrices (A, B), using the expected
         counts (A_counts, B_counts) that were accumulated by the E step.
@@ -186,6 +259,8 @@ class HiddenMarkovModel:
         legal_rows[self.eos_t] = False
         self.B_counts[legal_rows, :] += λ
         row_sums = self.B_counts.sum(dim=1, keepdim=True).clamp_min(1e-24)
+        if self.B_prior is not None and self.mu_B > 0:
+            self.B_counts[legal_rows, :] += self.mu_B * self.B_prior[legal_rows, :]
 
         self.B = torch.zeros_like(self.B_counts)
         # self.B = self.B_counts / self.B_counts.sum(
@@ -218,6 +293,10 @@ class HiddenMarkovModel:
         counts = self.A_counts * legal
         counts = counts + legal * λ
         row_sums = counts.sum(dim=1, keepdim=True)
+
+        if self.A_prior is not None and self.mu_A > 0:
+            counts += self.mu_A * (self.A_prior * legal)
+
         A_copy = torch.where(row_sums > 0, counts / row_sums, torch.zeros_like(counts))
         A_copy[:, self.bos_t] = 0.0
         A_copy[self.eos_t, :] = 0.0
@@ -366,6 +445,15 @@ class HiddenMarkovModel:
     #             if tj is not None and wj is not None:
     #                 self.B_counts[tj, wj] += mult
 
+    def E_step_supervised(self, isent, mult: float = 1.0) -> None:
+        for j in range(1, len(isent)):
+            w_prev, t_prev = isent[j - 1]
+            w, t = isent[j]
+            if j < len(isent) - 1:
+                self.B_counts[t, w] += mult
+            if t_prev != self.eos_t and t != self.bos_t:
+                self.A_counts[t_prev, t] += mult
+
     def E_step(
         self,
         isent: IntegerizedSentence,
@@ -392,6 +480,22 @@ class HiddenMarkovModel:
         assert torch.isclose(
             log_Z_forward, log_Z_backward, atol=1e-4
         ), f"backward log-probability {log_Z_backward} doesn't match forward log-probability {log_Z_forward}!"
+
+    def build_constraints_from_supervision(
+        self, sup_corpus, min_count: int = 2
+    ) -> None:
+        counts = {}
+        for sent in sup_corpus:
+            isent = self._integerize_sentence(sent, sup_corpus)
+            for j in range(1, len(isent) - 1):
+                w, t = isent[j]
+                d = counts.setdefault(w, {})
+                d[t] = d.get(t, 0) + 1
+        self.allowed_tags_for_word = {
+            w: {t for t, c in d.items() if c >= min_count}
+            for w, d in counts.items()
+            if any(c >= min_count for c in d.values())
+        }
 
     @typechecked
     def forward_pass(self, isent: IntegerizedSentence) -> TorchScalar:
@@ -426,17 +530,12 @@ class HiddenMarkovModel:
 
         for j in range(1, len(isent)):
             if j == len(isent) - 1:
-                lB_wj = torch.full((self.k,), NEGINF)
+                lB_wj = torch.full((self.k,), NEGINF, device=lB.device)
                 lB_wj[self.eos_t] = 0.0
             else:
                 wj, required_tag = isent[j]
-                if required_tag is None:
-                    lB_wj = lB[:, wj].clone()
-                    lB_wj[self.eos_t] = NEGINF
-                    lB_wj[self.bos_t] = NEGINF
-                else:
-                    lB_wj = torch.full((self.k,), NEGINF)
-                    lB_wj[required_tag] = lB[required_tag, wj]
+                lB_wj = self._lB_for_word(lB, wj, required_tag)
+
             if j < len(isent) - 1:
                 log_alpha[j - 1][self.eos_t] = NEGINF
 
@@ -481,17 +580,11 @@ class HiddenMarkovModel:
 
         for j in range(N - 2, -1, -1):
             if j == N - 2:
-                lB_wj = torch.full((self.k,), NEGINF)
+                lB_wj = torch.full((self.k,), NEGINF, device=lB.device)
                 lB_wj[self.eos_t] = 0.0
             else:
                 wj, tag_in_pos = isent[j + 1]
-                if tag_in_pos is None:
-                    lB_wj = lB[:, wj].clone()
-                    lB_wj[self.bos_t] = NEGINF
-                    lB_wj[self.eos_t] = NEGINF
-                else:
-                    lB_wj = torch.full((self.k,), NEGINF)
-                    lB_wj[tag_in_pos] = lB[tag_in_pos, wj]
+                lB_wj = self._lB_for_word(lB, wj, tag_in_pos)
 
             scores = lA + lB_wj.unsqueeze(0) + log_beta[j + 1, :].unsqueeze(0)
             log_beta[j, :] = torch.logsumexp(scores, dim=1)
@@ -545,25 +638,18 @@ class HiddenMarkovModel:
 
         for j in range(1, N):
             if j == N - 1:
-                logB_wj = torch.full((self.k,), NEGINF)
+                logB_wj = torch.full((self.k,), NEGINF, device=lB.device)
                 logB_wj[self.eos_t] = 0.0
-                allowed_transitions = torch.zeros(self.k, dtype=torch.bool)
+                allowed_transitions = torch.zeros(
+                    self.k, dtype=torch.bool, device=lB.device
+                )
                 allowed_transitions[self.eos_t] = True
-
             else:
                 Wj, required_tag = isent[j]
-                if required_tag is None:
-                    logB_wj = lB[:, Wj].clone()
-                    logB_wj[self.bos_t] = NEGINF
-                    logB_wj[self.eos_t] = NEGINF
-                    allowed_transitions = torch.ones(self.k, dtype=torch.bool)
-                    allowed_transitions[self.bos_t] = False
-                    allowed_transitions[self.eos_t] = False
-                else:
-                    logB_wj = torch.full((self.k,), NEGINF)
-                    logB_wj[required_tag] = lB[required_tag, Wj]
-                    allowed_transitions = torch.zeros(self.k, dtype=torch.bool)
-                    allowed_transitions[required_tag] = True
+                logB_wj = self._lB_for_word(lB, Wj, required_tag)
+                allowed_transitions = torch.isfinite(logB_wj)
+                allowed_transitions[self.bos_t] = False
+                allowed_transitions[self.eos_t] = False
 
             log_transition_count_at_j = (
                 log_alpha[j - 1].unsqueeze(1)
@@ -593,6 +679,15 @@ class HiddenMarkovModel:
             transition_counts_at_j[self.eos_t, :] = 0.0
             transition_counts_at_j *= allowed_transitions.unsqueeze(0)
             self.A_counts += transition_counts_at_j * float(mult)
+
+        if N > 2:
+            w1, gold1 = isent[1]
+            lB_w1 = self._lB_for_word(lB, w1, gold1)
+        elif N == 2:
+            lB_w1 = torch.full((self.k,), NEGINF, device=lB.device)
+            lB_w1[self.eos_t] = 0.0
+        else:
+            lB_w1 = torch.full((self.k,), NEGINF, device=lB.device)
 
         self.log_Z_backward = torch.logsumexp(
             lA[self.bos_t, :] + lB_w1 + log_beta[1, :], dim=0

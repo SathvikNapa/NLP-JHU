@@ -1,0 +1,18 @@
+Cross-entropy: 12.6501 nats (= perplexity 311808.129)
+Cross-entropy: 6.9890 nats (= perplexity 1084.617)
+Cross-entropy: 12.6501 nats (= perplexity 311808.129)
+Cross-entropy: 12.6501 nats (= perplexity 311808.129)
+Cross-entropy: 12.6501 nats (= perplexity 311808.129)
+Cross-entropy: 6.9890 nats (= perplexity 1084.617)
+Cross-entropy: 12.6501 nats (= perplexity 311808.129)
+Cross-entropy: 6.9890 nats (= perplexity 1084.617)
+Cross-entropy: 6.9623 nats (= perplexity 1056.077)
+Cross-entropy: 6.9630 nats (= perplexity 1056.818)
+Cross-entropy: 6.9645 nats (= perplexity 1058.414)
+Cross-entropy: 6.9659 nats (= perplexity 1059.878)
+Total training time: 0:01:58
+---
+Wrote tagging to ../models/hmm_awesome_endev.output
+Cross-entropy: 6.9659 nats (= perplexity 1059.878)
+Tagging accuracy: all: 90.501%, known: 94.941%, seen: nan%, novel: 24.703%
+===

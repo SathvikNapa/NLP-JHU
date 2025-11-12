@@ -183,6 +183,49 @@ def parse_args() -> argparse.Namespace:
         help="lambda for add-lambda smoothing in the HMM M-step",
     )
 
+    hmmgroup.add_argument(
+        "--sup_weight",
+        type=float,
+        default=10.0,
+        help="weight for supervised sentences in semi-supervised EM (default 10)",
+    )
+    hmmgroup.add_argument(
+        "--raw_weight",
+        type=float,
+        default=1.0,
+        help="weight for raw sentences in semi-supervised EM (default 1)",
+    )
+    hmmgroup.add_argument(
+        "--muA",
+        type=float,
+        default=0.0,
+        help="L2 tether strength for transitions toward supervised initializer",
+    )
+    hmmgroup.add_argument(
+        "--muB",
+        type=float,
+        default=0.0,
+        help="L2 tether strength for emissions toward supervised initializer",
+    )
+    hmmgroup.add_argument(
+        "--patience",
+        type=int,
+        default=3,
+        help="early-stopping patience (epochs-of-sup+raw rounds) for semi-supervised EM",
+    )
+    hmmgroup.add_argument(
+        "--min_tag_count",
+        type=int,
+        default=2,
+        help="min supervised occurrences to allow a tag for a word (constraints)",
+    )
+    hmmgroup.add_argument(
+        "--warmstart_steps",
+        type=int,
+        default=0,
+        help="optional supervised-only steps before semi-supervised EM",
+    )
+
     #####
     crfgroup = parser.add_argument_group(
         "CRF or gradient-training options (ignored for HMM)"
@@ -438,14 +481,65 @@ def main() -> None:
                     log.warning(
                         f"Ignoring --{option} since we're training by batch EM, not SGD"
                     )
-            model.train(
-                corpus=train_corpus,
-                loss=loss,
-                λ=args.λ,  # type: ignore
-                tolerance=args.tolerance,
-                max_steps=args.max_steps,
-                save_path=args.model,
-            )
+            if not args.awesome:
+                model.train(
+                    corpus=train_corpus,
+                    loss=loss,
+                    λ=args.λ,  # type: ignore
+                    tolerance=args.tolerance,
+                    max_steps=args.max_steps,
+                    save_path=args.model,
+                )
+            else:
+                if not args.train or len(args.train) < 1:
+                    raise SystemExit(
+                        "--awesome requires at least one supervised training file"
+                    )
+                sup_path = Path(args.train[0])
+                raw_paths = [Path(p) for p in args.train[1:]]
+
+                sup_corpus = TaggedCorpus(
+                    sup_path, tagset=model.tagset, vocab=model.vocab
+                )
+                raw_corpus = (
+                    TaggedCorpus(*raw_paths, tagset=model.tagset, vocab=model.vocab)
+                    if raw_paths
+                    else []
+                )
+
+                if args.warmstart_steps > 0:
+                    log.info(
+                        f"Warm-start: supervised-only EM for {args.warmstart_steps} steps"
+                    )
+                    model.train(
+                        corpus=sup_corpus,
+                        loss=loss,
+                        λ=args.λ,
+                        tolerance=0.0,
+                        max_steps=args.warmstart_steps,
+                        save_path=args.model,
+                    )
+
+                model.A_prior = model.A.detach().clone()
+                model.B_prior = model.B.detach().clone()
+                model.mu_A = args.muA
+                model.mu_B = args.muB
+
+                model.build_constraints_from_supervision(
+                    sup_corpus, min_count=args.min_tag_count
+                )
+
+                model.train_semisup(
+                    sup_corpus=sup_corpus,
+                    raw_corpus=raw_corpus,
+                    loss=loss,
+                    λ=args.λ,  # type: ignore
+                    w_sup=args.sup_weight,
+                    w_raw=args.raw_weight,
+                    patience=args.patience,
+                    max_steps=args.max_steps,
+                    save_path=args.model,
+                )
         else:
             raise NotImplementedError()
 

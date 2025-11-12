@@ -292,3 +292,21 @@ CRF supervised training and evaluation on endev
   regions, it can introduce mild bias or noise for well-covered tokens unless confidence thresholds and ensup based
   modeling is weight tuned/regularized.
 
+Q3
+
+We have implemented the following
+
+1. Posterior Decoding
+    * The posterior Decoding first runs forward–backward algorithm, then at each word picks the tag with the highest
+      posterior probability, which can be more “locally correct” than Viterbi.
+    * Minimum Bayes Risk seems to be the lowest at posterior decoding step.
+2. Smoothing at M-step
+    * Adding lambda smoothing at both E and M steps.
+    * L2 tether's that ties the supervised loss to unsupervised loss. Here, supervised loss regularizes the unsupervised
+      loss.
+3. Hard constraints from supervision
+    * build per-word allowed tagsets
+
+Performance of HMM with these introduced parameters
+Cross-entropy: 6.9659 nats (= perplexity 1059.878)
+Tagging accuracy: all: 90.501%, known: 94.941%, seen: nan%, novel: 24.703%
